@@ -1,3 +1,4 @@
+# Create the domain
 module "opensearch" {
   source = "../"
 
@@ -9,7 +10,7 @@ module "opensearch" {
   engine_version = "OpenSearch_2.5"
 
   # Non-production cluster configuration
-  cluster_config   = {
+  cluster_config = {
     instance_count = 2
     instance_type  = "t3.small.search"
   }
@@ -26,4 +27,16 @@ module "opensearch" {
   namespace              = var.namespace
   environment_name       = var.environment
   infrastructure_support = var.infrastructure_support
+}
+
+# Output the proxy URL
+resource "kubernetes_secret" "opensearch" {
+  metadata {
+    name      = "${var.team_name}-opensearch-proxy-url"
+    namespace = var.namespace
+  }
+
+  data = {
+    proxy_url = module.opensearch.proxy_url
+  }
 }

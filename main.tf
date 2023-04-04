@@ -137,7 +137,7 @@ resource "aws_opensearch_domain" "this" {
     content {
       ebs_enabled = true
 
-      iops        = try(ebs_options.value["iops"], 3000) # these are AWS defaults
+      iops        = try(ebs_options.value["iops"], 3000)      # these are AWS defaults
       throughput  = try(ebs_options.value["throughput"], 125) # these are AWS defaults
       volume_size = ebs_options.value["volume_size"]
       volume_type = "gp3"
