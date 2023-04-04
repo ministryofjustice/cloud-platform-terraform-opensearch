@@ -104,7 +104,9 @@ See the [examples/](examples/) folder for more information.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_proxy_url"></a> [proxy\_url](#output\_proxy\_url) | URL for opensearch-proxy service |
 <!-- END_TF_DOCS -->
 
 ## Tags
