@@ -20,7 +20,11 @@ variable "advanced_options" {
 variable "cluster_config" {
   description = "Configuration block for the cluster of the domain"
   type        = map(any)
-  default     = {}
+}
+
+variable "ebs_options" {
+  description = "Configuration block for EBS options for the domain"
+  type        = map(any)
 }
 
 variable "engine_version" {

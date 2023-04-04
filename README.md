@@ -17,11 +17,15 @@ module "opensearch" {
   eks_cluster_name = var.eks_cluster_name
 
   # Cluster configuration
-  engine_version = "OpenSearch_1.0"
+  engine_version = "OpenSearch_2.5"
 
   cluster_config   = {
-    instance_count = 3
-    instance_type  = "t3.medium.search"
+    instance_count = 2
+    instance_type  = "t3.small.search"
+  }
+
+  ebs_options = {
+    volume_size = 10
   }
 
   # Tags
