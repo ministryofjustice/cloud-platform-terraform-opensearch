@@ -60,13 +60,15 @@ resource "aws_security_group" "this" {
   description = "Allow TLS ingress traffic via the private subnet for OpenSearch domain: ${local.identifier}"
 
   ingress {
+    description = "TLS from the private subnets"
     from_port   = 443
     to_port     = 443
-    protocol    = "-1"
+    protocol    = "tcp"
     cidr_blocks = [for s in data.aws_subnet.private : s.cidr_block]
   }
 
   egress {
+    description = "Egress to the private subnets"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -117,9 +119,9 @@ resource "aws_opensearch_domain" "this" {
       warm_type    = try(cluster_config.value["warm_enabled"], false) ? cluster_config.value["warm_type"] : null
 
       # Zone awareness
-      zone_awareness_enabled = (cluster_config.value["instance_count"] > 1) ? true : false
+      zone_awareness_enabled = true
       zone_awareness_config {
-        availability_zone_count = cluster_config.value["instance_count"] > 1 ? cluster_config.value["instance_count"] : null
+        availability_zone_count = (cluster_config.value["instance_count"] < 3) ? 2 : 3 # 2 AZs for 2 instances, 3 for anything higher
       }
     }
   }
@@ -129,12 +131,17 @@ resource "aws_opensearch_domain" "this" {
     tls_security_policy = "Policy-Min-TLS-1-2-2019-07" # default to TLS 1.2
   }
 
-  ebs_options {
-    ebs_enabled = true
-    iops        = 3000
-    throughput  = 125
-    volume_size = 10
-    volume_type = "gp3"
+  dynamic "ebs_options" {
+    for_each = [var.ebs_options]
+
+    content {
+      ebs_enabled = true
+
+      iops        = try(ebs_options.value["iops"], 3000)      # these are AWS defaults
+      throughput  = try(ebs_options.value["throughput"], 125) # these are AWS defaults
+      volume_size = ebs_options.value["volume_size"]
+      volume_type = "gp3"
+    }
   }
 
   engine_version = var.engine_version
@@ -150,7 +157,7 @@ resource "aws_opensearch_domain" "this" {
 
   vpc_options {
     security_group_ids = [aws_security_group.this.id]
-    subnet_ids         = slice(data.aws_subnets.private.ids, 0, var.cluster_config.instance_count)
+    subnet_ids         = (var.cluster_config["instance_count"] < 3) ? slice(data.aws_subnets.private.ids, 0, 2) : data.aws_subnets.private.ids
   }
 
   tags = local.default_tags
