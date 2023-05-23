@@ -4,7 +4,7 @@
 
 This Terraform module will create an [AWS OpenSearch](https://aws.amazon.com/opensearch-service/) domain for use on the Cloud Platform.
 
-It also creates an [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) to allow access via your Cloud Platform namespace pods, and a [proxy webserver](https://github.com/abutaha/aws-es-proxy) to automatically sign requests to your OpenSearch domain from your pods.
+It also creates an [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) to allow access via your Cloud Platform namespace pods, and a [proxy webserver](https://github.com/awslabs/aws-sigv4-proxy) to automatically sign requests to your OpenSearch domain from your pods.
 
 ## Usage
 
