@@ -27,7 +27,7 @@ resource "kubernetes_deployment" "proxy" {
       spec {
         service_account_name = module.irsa.service_account_name.name
         container {
-          image = "abutaha/aws-es-proxy:v1.5"
+          image = "public.ecr.aws/aws-observability/aws-sigv4-proxy:1.7"
           name  = "opensearch-proxy"
 
           security_context {
@@ -37,17 +37,17 @@ resource "kubernetes_deployment" "proxy" {
           }
 
           port {
-            container_port = 9200
+            container_port = 8080
           }
 
           args = [
-            "-endpoint",
-            format(
-              "https://%s",
-              aws_opensearch_domain.this.endpoint,
-            ),
-            "-listen",
-            ":9200"
+            "--log-failed-requests", # to view failed requests in logs
+            "--name", # Explicit proxying service name (`es` is applicable for OpenSearch)
+            "es",
+            "--region", # OpenSearch region
+            data.aws_region.current.name,
+            "--host", # OpenSearch VPC domain
+            aws_opensearch_domain.this.endpoint
           ]
         }
       }
@@ -67,8 +67,8 @@ resource "kubernetes_service" "proxy" {
     }
 
     port {
-      port        = 9200
-      target_port = 9200
+      port        = 8080
+      target_port = 8080
     }
   }
 }
