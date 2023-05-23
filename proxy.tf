@@ -70,8 +70,8 @@ resource "kubernetes_service" "proxy" {
     }
 
     port {
-      port        = 9200
-      target_port = 9200
+      port        = 8080
+      target_port = 8080
     }
   }
 }
