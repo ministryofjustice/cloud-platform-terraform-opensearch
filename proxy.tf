@@ -37,17 +37,15 @@ resource "kubernetes_deployment" "proxy" {
           }
 
           port {
-            container_port = 9200
+            container_port = 8080
           }
 
           args = [
-            "-endpoint",
+            "--sign-host",
             format(
               "https://%s",
               aws_opensearch_domain.this.endpoint,
-            ),
-            "-listen",
-            ":9200"
+            )
           ]
         }
       }
