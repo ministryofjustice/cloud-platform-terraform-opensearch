@@ -44,7 +44,8 @@ resource "kubernetes_deployment" "proxy" {
             "--verbose",
             "--name",
             "es",
-            "--region eu-west-2",
+            "--region",
+            "eu-west-2",
             "--host",
             format(
               "https://%s",
