@@ -41,6 +41,7 @@ resource "kubernetes_deployment" "proxy" {
           }
 
           args = [
+            "--verbose",
             "--sign-host",
             format(
               "https://%s",
