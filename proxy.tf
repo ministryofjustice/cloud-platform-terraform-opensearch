@@ -42,7 +42,10 @@ resource "kubernetes_deployment" "proxy" {
 
           args = [
             "--verbose",
-            "--sign-host",
+            "--name",
+            "es",
+            "--region eu-west-2",
+            "--host",
             format(
               "https://%s",
               aws_opensearch_domain.this.endpoint,
