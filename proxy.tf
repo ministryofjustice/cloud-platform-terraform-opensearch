@@ -27,7 +27,7 @@ resource "kubernetes_deployment" "proxy" {
       spec {
         service_account_name = module.irsa.service_account_name.name
         container {
-          image = "abutaha/aws-es-proxy:v1.5"
+          image = "public.ecr.aws/aws-observability/aws-sigv4-proxy:1.7"
           name  = "opensearch-proxy"
 
           security_context {
