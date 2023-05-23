@@ -47,10 +47,7 @@ resource "kubernetes_deployment" "proxy" {
             "--region",
             "eu-west-2",
             "--host",
-            format(
-              "https://%s",
-              aws_opensearch_domain.this.endpoint,
-            )
+            aws_opensearch_domain.this.endpoint
           ]
         }
       }
