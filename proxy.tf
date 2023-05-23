@@ -42,12 +42,10 @@ resource "kubernetes_deployment" "proxy" {
 
           args = [
             "--log-failed-requests", # to view failed requests in logs
-            "--name", # explicit service name
+            "--name", # Explicit proxying service name (`es` is applicable for OpenSearch)
             "es",
             "--region", # OpenSearch region
             data.aws_region.current.name,
-            "--pstream-url-scheme", # URL scheme to use (HTTPS)
-            "https",
             "--host", # OpenSearch VPC domain
             aws_opensearch_domain.this.endpoint
           ]
