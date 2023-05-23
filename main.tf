@@ -18,6 +18,11 @@ locals {
   }
 }
 
+##################
+# Get AWS region #
+##################
+data "aws_region" "current" {}
+
 #######################
 # Get VPC information #
 #######################
