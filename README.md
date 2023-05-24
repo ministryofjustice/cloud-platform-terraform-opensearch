@@ -4,7 +4,7 @@
 
 This Terraform module will create an [AWS OpenSearch](https://aws.amazon.com/opensearch-service/) domain for use on the Cloud Platform.
 
-It also creates an [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) to allow access via your Cloud Platform namespace pods, and a [proxy webserver](https://github.com/abutaha/aws-es-proxy) to automatically sign requests to your OpenSearch domain from your pods.
+It also creates an [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) to allow access via your Cloud Platform namespace pods, and a [proxy webserver](https://github.com/awslabs/aws-sigv4-proxy) to automatically sign requests to your OpenSearch domain from your pods.
 
 ## Usage
 
@@ -79,6 +79,7 @@ See the [examples/](examples/) folder for more information.
 | [random_id.name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
 | [aws_iam_policy_document.domain_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.irsa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [aws_subnet.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 | [aws_subnets.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
 | [aws_vpc.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
