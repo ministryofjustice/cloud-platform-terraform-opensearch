@@ -23,6 +23,11 @@ locals {
 ##################
 data "aws_region" "current" {}
 
+###########################
+# Get account information #
+###########################
+data "aws_caller_identity" "current" {}
+
 #######################
 # Get VPC information #
 #######################
@@ -168,6 +173,69 @@ resource "aws_opensearch_domain" "this" {
   tags = local.default_tags
 }
 
+# Configure OpenSearch snapshot repository
+data "aws_arn" "snapshot_bucket" {
+  arn = var.snapshot_bucket_arn
+}
+
+data "aws_iam_policy_document" "snapshot_assume_role" {
+  version = "2012-10-17"
+
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["es.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+}
+
+resource "aws_iam_role" "snapshot" {
+  name               = "${local.identifier}-snapshot"
+  assume_role_policy = data.aws_iam_policy_document.snapshot_assume_role.json
+
+  tags = local.default_tags
+}
+
+data "aws_iam_policy_document" "snapshot" {
+  version = "2012-10-17"
+
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:ListBucket"]
+    resources = [var.snapshot_bucket_arn]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+    ]
+    resources = ["${var.snapshot_bucket_arn}/*"]
+  }
+}
+
+resource "aws_iam_policy" "snapshot" {
+  name   = "${local.identifier}-snapshot"
+  path   = "/cloud-platform/opensearch/"
+  policy = data.aws_iam_policy_document.snapshot.json
+  tags   = local.default_tags
+}
+
+resource "aws_iam_role_policy_attachment" "snapshot" {
+  role       = aws_iam_role.snapshot.name
+  policy_arn = aws_iam_policy.snapshot.arn
+}
+
 # Allow access for the Kubernetes cluster/IRSA
 data "aws_iam_policy_document" "domain_policy" {
   statement {
@@ -180,7 +248,7 @@ data "aws_iam_policy_document" "domain_policy" {
     ]
     principals {
       type        = "AWS"
-      identifiers = [module.irsa.aws_iam_role_arn]
+      identifiers = [module.irsa.role_arn]
     }
   }
 }
