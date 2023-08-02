@@ -27,7 +27,21 @@ resource "aws_iam_policy" "irsa" {
 module "irsa" {
   source = "github.com/ministryofjustice/cloud-platform-terraform-irsa?ref=2.0.0"
 
+  # EKS configuration
   eks_cluster_name = var.eks_cluster_name
-  namespace        = var.namespace
-  role_policy_arns = [aws_iam_policy.irsa.arn]
+
+  # IRSA configuration
+  service_account_name = "${var.team_name}-${var.environment_name}"
+  namespace            = var.namespace # this is also used as a tag
+  role_policy_arns = {
+    opensearch = aws_iam_policy.irsa.arn
+  }
+
+  # Tags
+  business_unit          = var.business_unit
+  application            = var.application
+  is_production          = var.is_production
+  team_name              = var.team_name
+  environment_name       = var.environment_name
+  infrastructure_support = var.infrastructure_support
 }

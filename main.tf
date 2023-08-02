@@ -180,7 +180,7 @@ data "aws_iam_policy_document" "domain_policy" {
     ]
     principals {
       type        = "AWS"
-      identifiers = [module.irsa.aws_iam_role_arn]
+      identifiers = [module.irsa.role_arn]
     }
   }
 }

@@ -25,7 +25,7 @@ resource "kubernetes_deployment" "proxy" {
       }
 
       spec {
-        service_account_name = module.irsa.service_account_name.name
+        service_account_name = module.irsa.service_account.name
         container {
           image = "public.ecr.aws/aws-observability/aws-sigv4-proxy:1.7"
           name  = "opensearch-proxy"
@@ -42,7 +42,7 @@ resource "kubernetes_deployment" "proxy" {
 
           args = [
             "--log-failed-requests", # to view failed requests in logs
-            "--name", # Explicit proxying service name (`es` is applicable for OpenSearch)
+            "--name",                # Explicit proxying service name (`es` is applicable for OpenSearch)
             "es",
             "--region", # OpenSearch region
             data.aws_region.current.name,
