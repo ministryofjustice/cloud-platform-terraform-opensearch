@@ -14,6 +14,13 @@ data "aws_iam_policy_document" "irsa" {
       "${aws_opensearch_domain.this.arn}/*"
     ]
   }
+
+  # for snapshots
+  statement {
+    effect    = "Allow"
+    actions   = ["iam:PassRole"]
+    resources = [aws_iam_role.snapshot.arn]
+  }
 }
 
 resource "aws_iam_policy" "irsa" {

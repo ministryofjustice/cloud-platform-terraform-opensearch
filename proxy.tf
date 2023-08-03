@@ -42,7 +42,7 @@ resource "kubernetes_deployment" "proxy" {
 
           args = [
             "--log-failed-requests", # to view failed requests in logs
-            "--name",                # Explicit proxying service name (`es` is applicable for OpenSearch)
+            "--name",                # explicit proxying service name (`es` is applicable for OpenSearch)
             "es",
             "--region", # OpenSearch region
             data.aws_region.current.name,

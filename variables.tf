@@ -38,6 +38,11 @@ variable "proxy_count" {
   default     = 1
 }
 
+variable "snapshot_bucket_arn" {
+  description = "S3 bucket ARN for domain snapshots"
+  type        = string
+}
+
 ########
 # Tags #
 ########
