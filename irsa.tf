@@ -31,7 +31,7 @@ module "irsa" {
   eks_cluster_name = var.eks_cluster_name
 
   # IRSA configuration
-  service_account_name = local.identifier
+  service_account_name = "${local.identifier}-opensearch"
   namespace            = var.namespace # this is also used as a tag
   role_policy_arns = {
     opensearch = aws_iam_policy.irsa.arn
