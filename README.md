@@ -1,8 +1,8 @@
 # cloud-platform-terraform-opensearch
 
-[![Releases](https://img.shields.io/github/release/ministryofjustice/cloud-platform-terraform-opensearch/all.svg?style=flat-square)](https://github.com/ministryofjustice/cloud-platform-terraform-opensearch/releases)
+[![Releases](https://img.shields.io/github/v/release/ministryofjustice/cloud-platform-terraform-opensearch.svg)](https://github.com/ministryofjustice/cloud-platform-terraform-opensearch/releases)
 
-This Terraform module will create an [AWS OpenSearch](https://aws.amazon.com/opensearch-service/) domain for use on the Cloud Platform.
+This Terraform module will create an [Amazon OpenSearch](https://aws.amazon.com/opensearch-service/) domain for use on the Cloud Platform.
 
 It also creates an [IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) to allow access via your Cloud Platform namespace pods, and a [proxy webserver](https://github.com/awslabs/aws-sigv4-proxy) to automatically sign requests to your OpenSearch domain from your pods.
 
@@ -17,9 +17,10 @@ module "opensearch" {
   eks_cluster_name = var.eks_cluster_name
 
   # Cluster configuration
-  engine_version = "OpenSearch_2.5"
+  engine_version      = "OpenSearch_2.7"
+  snapshot_bucket_arn = module.s3.bucket_arn
 
-  cluster_config   = {
+  cluster_config = {
     instance_count = 2
     instance_type  = "t3.small.search"
   }
@@ -128,4 +129,4 @@ You should use your namespace variables to populate these. See the [Usage](#usag
 ## Reading Material
 
 - [Cloud Platform user guide](https://user-guide.cloud-platform.service.justice.gov.uk/#cloud-platform-user-guide)
-- [AWS OpenSearch developer guide](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/what-is.html)
+- [Amazon OpenSearch developer guide](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/what-is.html)
