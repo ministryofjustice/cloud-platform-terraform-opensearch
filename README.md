@@ -98,6 +98,7 @@ See the [examples/](examples/) folder for more information.
 |------|-------------|------|---------|:--------:|
 | <a name="input_advanced_options"></a> [advanced\_options](#input\_advanced\_options) | Key-value string pairs to specify advanced configuration options | `map(string)` | `{}` | no |
 | <a name="input_application"></a> [application](#input\_application) | Application name | `string` | n/a | yes |
+| <a name="input_auto_tune_config"></a> [auto\_tune\_config](#input\_auto\_tune\_config) | see https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/opensearch_domain#maintenance_schedule for object structure | <pre>object({<br>    desired_state                  = string<br>    start_at                       = string<br>    duration_value                 = number<br>    duration_unit                  = string<br>    cron_expression_for_recurrence = string<br>    rollback_on_disable            = string<br>  })</pre> | `null` | no |
 | <a name="input_business_unit"></a> [business\_unit](#input\_business\_unit) | Area of the MOJ responsible for the service | `string` | n/a | yes |
 | <a name="input_cluster_config"></a> [cluster\_config](#input\_cluster\_config) | Configuration block for the cluster of the domain | `map(any)` | n/a | yes |
 | <a name="input_ebs_options"></a> [ebs\_options](#input\_ebs\_options) | Configuration block for EBS options for the domain | `map(any)` | n/a | yes |
