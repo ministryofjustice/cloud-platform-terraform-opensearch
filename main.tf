@@ -170,6 +170,25 @@ resource "aws_opensearch_domain" "this" {
     subnet_ids         = (var.cluster_config["instance_count"] < 3) ? slice(data.aws_subnets.private.ids, 0, 2) : data.aws_subnets.private.ids
   }
 
+  dynamic "auto_tune_options" {
+    for_each = var.auto_tune_config != null ? [1] : []
+    content {
+      desired_state       = strcontains(var.cluster_config.value["instance_type"], "t3.") ? "DISABLED" : auto_tune_config.value["desired_state"]
+      rollback_on_disable = auto_tune_config.value["rollback_on_disable"]
+      dynamic "maintenance_schedule" {
+        for_each = var.auto_tune_config != null ? [1] : []
+        content {
+          start_at = auto_tune_config.value["start_at"]
+          duration {
+            value = auto_tune_config.value["duration_value"]
+            unit  = auto_tune_config.value["duration_unit"]
+          }
+          cron_expression_for_recurrence = auto_tune_config.value["cron_expression_for_recurrence"]
+        }
+      }
+    }
+  }
+
   tags = local.default_tags
 }
 
