@@ -173,7 +173,7 @@ resource "aws_opensearch_domain" "this" {
   dynamic "auto_tune_options" {
     for_each = var.auto_tune_enabled ? [true] : []
     content {
-      desired_state       = var.auto_tune_enabled ? "ENABLED" : "DISABLED"
+      desired_state       = var.auto_tune_enabled ? (length(split("t3.", var.cluster_config["instance_type"])) > 1 ? "DISABLED": "ENABLED") : "DISABLED"
       rollback_on_disable = (var.auto_tune_config != null) ? var.auto_tune_config["rollback_on_disable"] : "NO_ROLLBACK"
       dynamic "maintenance_schedule" {
         for_each = var.auto_tune_config != null ? [1] : []
