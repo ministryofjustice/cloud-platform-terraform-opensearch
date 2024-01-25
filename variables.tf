@@ -43,9 +43,13 @@ variable "snapshot_bucket_arn" {
   type        = string
 }
 
+variable "auto_tune_enabled" {
+  description = "Whether to enable auto-tune or not"
+  type        = bool
+  default     = true
+}
 variable "auto_tune_config" {
   type = object({
-    desired_state                  = string
     start_at                       = string
     duration_value                 = number
     duration_unit                  = string
