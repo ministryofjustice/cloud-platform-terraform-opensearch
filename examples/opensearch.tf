@@ -1,6 +1,6 @@
 # Configure an S3 bucket for Snapshot Management
 module "s3" {
-  source = "github.com/ministryofjustice/cloud-platform-terraform-s3-bucket?ref=4.8.2" # use the latest release
+  source = "github.com/ministryofjustice/cloud-platform-terraform-s3-bucket?ref=5.1.0" # use the latest release
 
   # Tags
   business-unit          = var.business_unit
@@ -14,7 +14,8 @@ module "s3" {
 
 # Create the domain
 module "opensearch" {
-  source = "../"
+  source = "../" # use the latest release
+  # source = "github.com/ministryofjustice/cloud-platform-terraform-opensearch?ref=version" # use the latest release
 
   # VPC/EKS configuration
   vpc_name         = var.vpc_name
