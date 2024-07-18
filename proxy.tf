@@ -47,7 +47,8 @@ resource "kubernetes_deployment" "proxy" {
             "--region", # OpenSearch region
             data.aws_region.current.name,
             "--host", # OpenSearch VPC domain
-            aws_opensearch_domain.this.endpoint
+            aws_opensearch_domain.this.endpoint,
+            "-v"
           ]
         }
       }
