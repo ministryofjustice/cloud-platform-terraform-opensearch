@@ -54,6 +54,22 @@ data "aws_subnet" "private" {
   id       = each.value
 }
 
+data "aws_subnets" "eks_private" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.this.id]
+  }
+
+  tags = {
+    SubnetType = "EKS-Private"
+  }
+}
+
+data "aws_subnet" "eks_private" {
+  for_each = toset(data.aws_subnets.eks_private.ids)
+  id       = each.value
+}
+
 ########################
 # Generate identifiers #
 ########################
@@ -74,7 +90,10 @@ resource "aws_security_group" "this" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [for s in data.aws_subnet.private : s.cidr_block]
+    cidr_blocks = concat(
+      [for s in data.aws_subnet.private : s.cidr_block],
+      [for s in data.aws_subnet.eks_private : s.cidr_block]
+    )
   }
 
   egress {
@@ -82,7 +101,10 @@ resource "aws_security_group" "this" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [for s in data.aws_subnet.private : s.cidr_block]
+    cidr_blocks = concat(
+      [for s in data.aws_subnet.private : s.cidr_block],
+      [for s in data.aws_subnet.eks_private : s.cidr_block]
+    )
   }
 
   tags = local.default_tags

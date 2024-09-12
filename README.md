@@ -88,7 +88,9 @@ See the [examples/](examples/) folder for more information.
 | [aws_iam_policy_document.snapshot](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.snapshot_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
+| [aws_subnet.eks_private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
 | [aws_subnet.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnet) | data source |
+| [aws_subnets.eks_private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
 | [aws_subnets.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
 | [aws_vpc.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 
@@ -118,6 +120,7 @@ See the [examples/](examples/) folder for more information.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_irsa_role_arn"></a> [irsa\_role\_arn](#output\_irsa\_role\_arn) | Service account role ARN |
 | <a name="output_proxy_url"></a> [proxy\_url](#output\_proxy\_url) | URL for opensearch-proxy service |
 | <a name="output_snapshot_role_arn"></a> [snapshot\_role\_arn](#output\_snapshot\_role\_arn) | Snapshot role ARN |
 <!-- END_TF_DOCS -->
