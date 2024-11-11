@@ -151,7 +151,7 @@ resource "aws_opensearch_domain" "this" {
       warm_type    = try(cluster_config.value["warm_enabled"], false) ? cluster_config.value["warm_type"] : null
 
       # Zone awareness
-      zone_awareness_enabled = (cluster_config.value["instance_count"] >= 2) ? false : true
+      zone_awareness_enabled = (cluster_config.value["instance_count"] >= 2) ? true : false
 
       dynamic "zone_awareness_config" {
         for_each = cluster_config.value["instance_count"] == 2 ? [2] : cluster_config.value["instance_count"] >= 3 ? [3] : []
