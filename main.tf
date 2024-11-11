@@ -151,9 +151,14 @@ resource "aws_opensearch_domain" "this" {
       warm_type    = try(cluster_config.value["warm_enabled"], false) ? cluster_config.value["warm_type"] : null
 
       # Zone awareness
-      zone_awareness_enabled = true
-      zone_awareness_config {
-        availability_zone_count = (cluster_config.value["instance_count"] < 3) ? 2 : 3 # 2 AZs for 2 instances, 3 for anything higher
+      zone_awareness_enabled = (cluster_config.value["instance_count"] >= 2) ? true : false
+
+      dynamic "zone_awareness_config" {
+        for_each = cluster_config.value["instance_count"] == 2 ? [2] : cluster_config.value["instance_count"] >= 3 ? [3] : []
+
+        content {
+          availability_zone_count = zone_awareness_config.value
+        }
       }
     }
   }
@@ -195,7 +200,7 @@ resource "aws_opensearch_domain" "this" {
   dynamic "auto_tune_options" {
     for_each = var.auto_tune_enabled ? [true] : []
     content {
-      desired_state       = var.auto_tune_enabled ? (length(split("t3.", var.cluster_config["instance_type"])) > 1 ? "DISABLED": "ENABLED") : "DISABLED"
+      desired_state       = var.auto_tune_enabled ? (length(split("t3.", var.cluster_config["instance_type"])) > 1 ? "DISABLED" : "ENABLED") : "DISABLED"
       rollback_on_disable = (var.auto_tune_config != null) ? var.auto_tune_config["rollback_on_disable"] : "NO_ROLLBACK"
       dynamic "maintenance_schedule" {
         for_each = var.auto_tune_config != null ? [1] : []
