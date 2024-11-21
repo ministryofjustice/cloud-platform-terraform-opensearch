@@ -54,6 +54,22 @@ data "aws_subnet" "private" {
   id       = each.value
 }
 
+data "aws_subnets" "eks_private" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.this.id]
+  }
+
+  tags = {
+    SubnetType = "EKS-Private"
+  }
+}
+
+data "aws_subnet" "eks_private" {
+  for_each = toset(data.aws_subnets.eks_private.ids)
+  id       = each.value
+}
+
 ########################
 # Generate identifiers #
 ########################
@@ -74,7 +90,10 @@ resource "aws_security_group" "this" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [for s in data.aws_subnet.private : s.cidr_block]
+    cidr_blocks = concat(
+      [for s in data.aws_subnet.private : s.cidr_block],
+      [for s in data.aws_subnet.eks_private : s.cidr_block]
+    )
   }
 
   egress {
@@ -82,7 +101,10 @@ resource "aws_security_group" "this" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [for s in data.aws_subnet.private : s.cidr_block]
+    cidr_blocks = concat(
+      [for s in data.aws_subnet.private : s.cidr_block],
+      [for s in data.aws_subnet.eks_private : s.cidr_block]
+    )
   }
 
   tags = local.default_tags
@@ -129,9 +151,14 @@ resource "aws_opensearch_domain" "this" {
       warm_type    = try(cluster_config.value["warm_enabled"], false) ? cluster_config.value["warm_type"] : null
 
       # Zone awareness
-      zone_awareness_enabled = true
-      zone_awareness_config {
-        availability_zone_count = (cluster_config.value["instance_count"] < 3) ? 2 : 3 # 2 AZs for 2 instances, 3 for anything higher
+      zone_awareness_enabled = (cluster_config.value["instance_count"] >= 2) ? true : false
+
+      dynamic "zone_awareness_config" {
+        for_each = cluster_config.value["instance_count"] == 2 ? [2] : cluster_config.value["instance_count"] >= 3 ? [3] : []
+
+        content {
+          availability_zone_count = zone_awareness_config.value
+        }
       }
     }
   }
@@ -171,19 +198,19 @@ resource "aws_opensearch_domain" "this" {
   }
 
   dynamic "auto_tune_options" {
-    for_each = var.auto_tune_config != null ? [1] : []
+    for_each = var.auto_tune_enabled ? [true] : []
     content {
-      desired_state       = strcontains(var.cluster_config.value["instance_type"], "t3.") ? "DISABLED" : auto_tune_config.value["desired_state"]
-      rollback_on_disable = auto_tune_config.value["rollback_on_disable"]
+      desired_state       = var.auto_tune_enabled ? (length(split("t3.", var.cluster_config["instance_type"])) > 1 ? "DISABLED" : "ENABLED") : "DISABLED"
+      rollback_on_disable = (var.auto_tune_config != null) ? var.auto_tune_config["rollback_on_disable"] : "NO_ROLLBACK"
       dynamic "maintenance_schedule" {
         for_each = var.auto_tune_config != null ? [1] : []
         content {
-          start_at = auto_tune_config.value["start_at"]
+          start_at = var.auto_tune_config["start_at"]
           duration {
-            value = auto_tune_config.value["duration_value"]
-            unit  = auto_tune_config.value["duration_unit"]
+            value = var.auto_tune_config["duration_value"]
+            unit  = var.auto_tune_config["duration_unit"]
           }
-          cron_expression_for_recurrence = auto_tune_config.value["cron_expression_for_recurrence"]
+          cron_expression_for_recurrence = var.auto_tune_config["cron_expression_for_recurrence"]
         }
       }
     }

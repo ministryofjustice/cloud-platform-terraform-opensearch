@@ -7,3 +7,8 @@ output "snapshot_role_arn" {
   description = "Snapshot role ARN"
   value       = aws_iam_role.snapshot.arn
 }
+
+output "irsa_role_arn" {
+  description = "Service account role ARN"
+  value       = module.irsa.role_arn
+}
