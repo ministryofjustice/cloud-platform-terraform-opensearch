@@ -13,12 +13,12 @@ output "irsa_role_arn" {
   value       = module.irsa.role_arn
 }
 
-output "opensearch_domain_arn" {
+output "domain_arn" {
   description = "OpenSearch domain ARN"
   value       = aws_opensearch_domain.this.endpoint
 }
 
-output "opensearch_endpoint" {
+output "endpoint" {
   description = "OpenSearch VPC endpoint"
   value       = aws_opensearch_domain.this.endpoint
 }
