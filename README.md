@@ -120,8 +120,12 @@ See the [examples/](examples/) folder for more information.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_domain_arn"></a> [domain\_arn](#output\_domain\_arn) | OpenSearch domain ARN |
+| <a name="output_domain_name"></a> [domain\_name](#output\_domain\_name) | OpenSearch domain name |
+| <a name="output_endpoint"></a> [endpoint](#output\_endpoint) | OpenSearch VPC endpoint |
 | <a name="output_irsa_role_arn"></a> [irsa\_role\_arn](#output\_irsa\_role\_arn) | Service account role ARN |
 | <a name="output_proxy_url"></a> [proxy\_url](#output\_proxy\_url) | URL for opensearch-proxy service |
+| <a name="output_service_account_name"></a> [service\_account\_name](#output\_service\_account\_name) | Service account name |
 | <a name="output_snapshot_role_arn"></a> [snapshot\_role\_arn](#output\_snapshot\_role\_arn) | Snapshot role ARN |
 <!-- END_TF_DOCS -->
 
