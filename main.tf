@@ -169,7 +169,7 @@ resource "aws_opensearch_domain" "this" {
   }
 
   dynamic "ebs_options" {
-    for_each = [var.ebs_options]
+    for_each = var.ebs_enabled ? [var.ebs_options] : []
 
     content {
       ebs_enabled = true
