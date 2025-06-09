@@ -22,6 +22,12 @@ variable "cluster_config" {
   type        = map(any)
 }
 
+variable "ebs_enabled" {
+  description = "Whether to configure an EBS volume. Set to false for instance types that do not support EBS."
+  type        = bool
+  default     = true
+}
+
 variable "ebs_options" {
   description = "Configuration block for EBS options for the domain"
   type        = map(any)
