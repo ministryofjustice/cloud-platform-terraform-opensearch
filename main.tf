@@ -168,17 +168,12 @@ resource "aws_opensearch_domain" "this" {
     tls_security_policy = "Policy-Min-TLS-1-2-2019-07" # default to TLS 1.2
   }
 
-  dynamic "ebs_options" {
-    for_each = var.ebs_enabled ? [var.ebs_options] : []
-
-    content {
-      ebs_enabled = true
-
-      iops        = try(ebs_options.value["iops"], 3000)      # these are AWS defaults
-      throughput  = try(ebs_options.value["throughput"], 125) # these are AWS defaults
-      volume_size = ebs_options.value["volume_size"]
-      volume_type = "gp3"
-    }
+  ebs_options {
+    ebs_enabled = var.ebs_enabled
+    iops        = var.ebs_enabled ? try(var.ebs_options.value["iops"], 3000) : null      # these are AWS defaults
+    throughput  = var.ebs_enabled ? try(var.ebs_options.value["throughput"], 125) : null # these are AWS defaults
+    volume_size = var.ebs_enabled ? var.ebs_options.value["volume_size"] : null
+    volume_type = var.ebs_enabled ? "gp3" : null
   }
 
   engine_version = var.engine_version

@@ -31,6 +31,7 @@ variable "ebs_enabled" {
 variable "ebs_options" {
   description = "Configuration block for EBS options for the domain"
   type        = map(any)
+  default     = {}
 }
 
 variable "engine_version" {
