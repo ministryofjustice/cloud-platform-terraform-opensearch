@@ -170,9 +170,9 @@ resource "aws_opensearch_domain" "this" {
 
   ebs_options {
     ebs_enabled = var.ebs_enabled
-    iops        = var.ebs_enabled ? try(var.ebs_options.value["iops"], 3000) : null      # these are AWS defaults
-    throughput  = var.ebs_enabled ? try(var.ebs_options.value["throughput"], 125) : null # these are AWS defaults
-    volume_size = var.ebs_enabled ? var.ebs_options.value["volume_size"] : null
+    iops        = var.ebs_enabled ? try(var.ebs_options["iops"], 3000) : null      # these are AWS defaults
+    throughput  = var.ebs_enabled ? try(var.ebs_options["throughput"], 125) : null # these are AWS defaults
+    volume_size = var.ebs_enabled ? var.ebs_options["volume_size"] : null
     volume_type = var.ebs_enabled ? "gp3" : null
   }
 
